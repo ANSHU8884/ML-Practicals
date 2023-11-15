@@ -1,0 +1,94 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+from sklearn.model_selection import train_test_split
+
+df=pd.read_csv(r'D:\ML_Practicals\emails.csv')
+
+df.head()
+
+df.shape
+
+df.columns
+
+df.isnull().sum()
+
+#selecting columns for training
+df.drop(['Email No.'],axis=1,inplace=True)
+x=df.drop(['Prediction'],axis=1)
+y=df['Prediction']
+
+from sklearn.preprocessing import scale
+x=scale(x)
+
+x_train, x_test, y_train, y_test=train_test_split(x,y,test_size=0.20)
+x_train.shape
+
+#import knn classifier
+from sklearn.neighbors import KNeighborsClassifier
+
+#knn with k=5
+model_knn= KNeighborsClassifier(n_neighbors=5)
+
+
+#train model using fit function
+model_knn.fit(x_train,y_train)
+
+#predict the trained model
+y_pred=model_knn.predict(x_test)
+
+#print predicted values
+print("prediction",y_pred)
+
+#display accuracy of model
+from sklearn import metrics
+print("KNN Accuracy=",metrics.accuracy_score(y_test,y_pred))
+
+
+#model evaluation: R2,MAE,MSE & RMSE
+meanAbErr=metrics.mean_absolute_error(y_test,y_pred)
+meanSqErr=metrics.mean_squared_error(y_test,y_pred)
+rootMeanSqErr=np.sqrt(metrics.mean_squared_error(y_test,y_pred))
+print('R squared: {:.2f}'.format(model_knn.score(x,y)*100))
+print('Mean Absolute Error:',meanAbErr)
+print('Mean square Error:',meanSqErr)
+print('Root Mean square Error:',rootMeanSqErr)
+
+
+#import svm classifier svc from sklearn.svm
+from sklearn.svm import SVC
+
+#cost C=1
+model_svc=SVC(C=1)
+
+#train model using fit function
+model_svc.fit(x_train,y_train)
+
+
+#predict trained model
+y_pred_svc=model_svc.predict(x_test)
+
+
+#print predicted values
+print("prediction",y_pred_svc)
+
+#display accuracy of model
+print("SVM accuracy=",metrics.accuracy_score(y_test,y_pred_svc))
+
+
+#model evaluation: R2,MAE,MSE & RMSE
+meanAbErr = metrics.mean_absolute_error(y_test, y_pred_svc)
+meanSqErr = metrics.mean_squared_error(y_test, y_pred_svc)
+rootMeanSqErr = np.sqrt(metrics.mean_squared_error(y_test, y_pred_svc))
+print('R squared: {:.2f}'.format(model_svc.score(x,y)*100))
+print('Mean Absolute Error:', meanAbErr)
+print('Mean Square Error:', meanSqErr)
+print('Root Mean Square Error:', rootMeanSqErr)
+
+
+
+
+
